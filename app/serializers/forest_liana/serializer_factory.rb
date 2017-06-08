@@ -197,10 +197,12 @@ module ForestLiana
       if active_record_class.respond_to?(:acts_as_taggable) &&
         active_record_class.acts_as_taggable.respond_to?(:to_a)
         active_record_class.acts_as_taggable.to_a.each do |key, value|
-          expected_acts_as_taggable_collection = object.send(key)
-          if expected_acts_as_taggable_collection.is_a? ActsAsTaggableOn::Tag::ActiveRecord_Associations_CollectionProxy
-            serializer.attribute(key) do |x|
+          serializer.attribute(key) do |x|
+            expected_acts_as_taggable_collection = object.send(key)
+            if expected_acts_as_taggable_collection.is_a? ActsAsTaggableOn::Tag::ActiveRecord_Associations_CollectionProxy
               expected_acts_as_taggable_collection.map{ |tag| tag.try(:name) }
+            else 
+              expected_acts_as_taggable_collection
             end
           end
         end
